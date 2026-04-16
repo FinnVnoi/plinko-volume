@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlinkoVolume</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+  <div class="background"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="mobile-top-nav">
+    <div class="mobile-top-brand">
+      <div class="mobile-top-logo">P</div>
+      <span>PlinkoVolume</span>
+    </div>
+    <div class="mobile-top-volume">VOLUME HIEN TAI <strong id="mobileVolumeText">20%</strong></div>
+  </div>
+
+  <div id="startOverlay" class="overlay show">
+    <div class="modal">
+      <div class="pill">Bat dau tro choi</div>
+      <h3>Nhap link YouTube/SoundCloud</h3>
+      <p style="color:var(--text-secondary);">Dan link YouTube/SoundCloud va bam "Bat dau" de vao game.</p>
+      <div class="actions" style="justify-content:center;">
+        <input id="startYoutubeUrl" class="input" type="text" placeholder="https://..." />
+      </div>
+      <div class="actions" style="justify-content:center;">
+        <button id="startLoadBtn" class="btn">Bat dau</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <div class="logo">P</div>
+        <div class="logo-text">PlinkoVolume</div>
+      </div>
+
+      <div>
+        <div class="menu-title">Game Stats</div>
+        <div class="sidebar-stats">
+          <div class="sidebar-stat-card">
+            <div class="stat-label">Volume hien tai</div>
+            <div class="stat-value" id="volumeText">20%</div>
+            <div class="bar"><div id="volumeBar"></div></div>
+          </div>
+          <div class="sidebar-stat-card">
+            <div class="stat-label">Lan tha bong</div>
+            <div class="stat-value" id="dropCount">0</div>
+          </div>
+          <div class="sidebar-stat-card">
+            <div class="stat-label">Ket qua gan nhat</div>
+            <div class="stat-value" id="lastEffect">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speed-control">
+        <div class="speed-row">
+          <span>Toc do roi</span>
+          <strong id="fallSpeedValue">1.0x</strong>
+        </div>
+        <input id="fallSpeedRange" type="range" min="0.5" max="5" step="0.1" value="1" />
+      </div>
+
+      <div class="side-note">
+        Powered by MienJupiter<sup>©</sup> (v1.3)
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <nav class="navbar glass-card">
+        <h1 class="page-title">Plinko Volume Game</h1>
+        <button id="openStartBtn" class="btn secondary">Doi link</button>
+      </nav>
+      <div class="speed-control mobile-speed-control">
+        <div class="speed-row">
+          <span>Toc do roi</span>
+          <strong id="fallSpeedValueMobile">1.0x</strong>
+        </div>
+        <input id="fallSpeedRangeMobile" type="range" min="0.5" max="5" step="0.1" value="1" />
+      </div>
+
+      <section class="content-grid">
+        <section class="glass-card">
+          <div class="card-head">
+            <h2 class="card-title">Media Player</h2>
+            <span class="small">Volume thay doi theo ket qua Plinko</span>
+          </div>
+          <div class="video-body">
+            <div class="video-frame">
+              <div id="player"></div>
+              <div class="player-interaction-overlay" aria-hidden="true"></div>
+              <button id="resumeVideoBtn" class="resume-video-btn" type="button">Phat tiep</button>
+            </div>
+            <div class="status" id="statusBox">Moi lan tha bong ton 1% volume truoc, sau do cong/tru theo o bong roi xuong.</div>
+          </div>
+        </section>
+
+        <section class="glass-card">
+          <div class="card-head">
+            <div>
+              <h2 class="card-title">Plinko Board</h2>
+              <div class="small">VOLUME o muc <strong>100%</strong> se gianh chien thang!</div>
+            </div>
+            <button id="dropBtn" class="btn secondary card-head-drop-btn">Tha bong</button>
+          </div>
+          <div class="game-body">
+            <div id="plinkoStage" class="plinko-stage" tabindex="-1">
+              <canvas id="plinkoCanvas" width="560" height="820"></canvas>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="loseOverlay" class="overlay">
+    <div class="modal">
+      <div class="pill">Ket thuc luot choi</div>
+      <h3>Ban da thua</h3>
+      <p style="color:var(--text-secondary);">Volume da ve 0%, ban co muon choi lai?</p>
+      <div class="actions" style="justify-content:center;">
+        <button id="playAgainBtn" class="btn">Choi lai</button>
+        <button id="changeLinkOverlayBtn" class="btn secondary">Doi link</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="winOverlay" class="overlay">
+    <div class="modal">
+      <div class="pill">Chuc mung</div>
+      <h3>Ban da thang</h3>
+      <p style="color:var(--text-secondary);">Volume da dat 100%. Ban muon lam gi tiep theo?</p>
+      <div class="actions" style="justify-content:center;">
+        <button id="keepWinBtn" class="btn">Giu nguyen</button>
+        <button id="playAgainWinBtn" class="btn secondary">Choi lai</button>
+        <button id="changeMusicWinBtn" class="btn secondary">Doi link (reset)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
